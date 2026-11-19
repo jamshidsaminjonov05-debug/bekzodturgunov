@@ -3,6 +3,7 @@ import { api } from '../lib/api'
 import { useAuth } from '../lib/auth'
 import { SECTIONS } from '../lib/sections'
 import { ErrorBox, Heading, Loader, Paper, Stat } from '../components/ui'
+import { MediaManager, GroupManager, EnrollmentManager } from './admin/Manage'
 
 // Yangi material uchun JSON shablonlar
 const TEMPLATES = {
@@ -22,6 +23,18 @@ const TEMPLATES = {
   stories: { summary: '', text: '', glossary: [{ word: '', meaning: '' }], questions: [{ prompt: '', options: ['', ''], answer: '' }] },
   speaking: { summary: '', part: '1.1', prep_seconds: 5, answer_seconds: 30, questions: [''], tips: [] },
   writing: { summary: '', task_type: '1.1', min_words: 50, prompt: '', tips: [] },
+  book: {
+    summary: '', cover: '📗', intro: '',
+    units: [{
+      title: '1. Passage name', passage: 'matn...',
+      glossary: [{ word: '', forms: [''], definition: '', meaning: '' }],
+      exercises: [
+        { id: 'e1', group: 'Exercise 2', type: 'mcq', prompt: '', options: ['A) ', 'B) '], answer: 'A) ' },
+        { id: 'e2', group: 'Exercise 3', type: 'input', prompt: '____', answer: '' },
+      ],
+      test: [{ id: 't1', prompt: '', options: ['', '', '', ''], answer: '' }],
+    }],
+  },
 }
 
 function AdminLogin() {
@@ -209,11 +222,11 @@ function Users() {
   return (
     <div className="card overflow-x-auto">
       <table className="w-full text-left">
-        <thead className="tertiary text-sm"><tr><th>ID</th><th>Ism</th><th>Testlar</th><th>Ro'yxatdan o'tgan</th></tr></thead>
+        <thead className="tertiary text-sm"><tr><th>ID</th><th>Ism</th><th>Telefon</th><th>Testlar</th><th>Ro'yxatdan o'tgan</th></tr></thead>
         <tbody>
           {rows.map((u) => (
             <tr key={u.id} className="border-t border-dotted border-bg-tertiary">
-              <td className="font-mono">{u.id}</td><td>{u.name}</td><td className="font-mono">{u.attempts}</td>
+              <td className="font-mono">{u.id}</td><td>{u.name}</td><td className="font-mono">{u.phone || '—'}</td><td className="font-mono">{u.attempts}</td>
               <td className="tertiary">{new Date(u.created_at).toLocaleString('uz-UZ')}</td>
             </tr>
           ))}
@@ -238,22 +251,26 @@ export default function Admin() {
       <Paper variant="grid">
         <Heading as="h1">Admin panel</Heading>
         {stats && (
-          <div className="grid grid-cols-2 md:grid-cols-5 gap-sm">
+          <div className="grid grid-cols-2 md:grid-cols-6 gap-sm">
             <Stat label="Foydalanuvchi" value={stats.users} />
             <Stat label="Testlar" value={stats.tests} />
             <Stat label="Darslar" value={stats.lessons} />
+            <Stat label="Kitoblar" value={stats.books ?? 0} />
             <Stat label="Urinishlar" value={stats.attempts} />
             <Stat label="Writing" value={stats.writings} />
           </div>
         )}
         <div className="flex gap-2 mt-md">
-          {[['kontent', 'Kontent'], ['musobaqa', 'Musobaqa'], ['users', 'Foydalanuvchilar']].map(([k, l]) => (
+          {[['kontent', 'Kontent'], ['media', 'Media'], ['groups', 'Guruhlar'], ['enrollments', 'Arizalar'], ['musobaqa', 'Musobaqa'], ['users', 'Foydalanuvchilar']].map(([k, l]) => (
             <button key={k} className={`btn !py-0.5 ${tab === k ? 'btn-primary' : ''}`} onClick={() => setTab(k)}>{l}</button>
           ))}
         </div>
       </Paper>
       <Paper variant="lined" className="min-h-[50vh]">
         {tab === 'kontent' && <ContentEditor />}
+        {tab === 'media' && <MediaManager />}
+        {tab === 'groups' && <GroupManager />}
+        {tab === 'enrollments' && <EnrollmentManager />}
         {tab === 'musobaqa' && <ContestEditor />}
         {tab === 'users' && <Users />}
       </Paper>

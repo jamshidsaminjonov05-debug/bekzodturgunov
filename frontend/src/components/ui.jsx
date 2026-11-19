@@ -24,7 +24,7 @@ export function Loader({ text = 'Yuklanmoqda…' }) {
 }
 
 export function ErrorBox({ error }) {
-  if (!error) return null
+  if (!error || error?.toastShown) return null // 500 va tarmoq xatoliklari toast'da ko'rsatiladi
   return <p className="card pop border-l-4 border-bad m-0">⚠️ {String(error.message ?? error)}</p>
 }
 

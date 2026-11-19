@@ -16,8 +16,8 @@ export function AuthProvider({ children }) {
       .finally(() => setReady(true))
   }, [])
 
-  const login = useCallback(async (name) => {
-    const r = await api('/auth/login', { method: 'POST', body: { name } })
+  const login = useCallback(async (name, phone) => {
+    const r = await api('/auth/login', { method: 'POST', body: { name, phone } })
     setToken(r.token)
     setUser(r.user)
     setLoginOpen(false)
@@ -36,8 +36,13 @@ export function AuthProvider({ children }) {
     setUser(null)
   }, [])
 
+  const refresh = useCallback(async () => {
+    if (!getToken()) return
+    try { setUser(await api('/auth/me')) } catch { /* ignore */ }
+  }, [])
+
   return (
-    <AuthCtx.Provider value={{ user, ready, login, adminLogin, logout, loginOpen, openLogin: () => setLoginOpen(true), closeLogin: () => setLoginOpen(false) }}>
+    <AuthCtx.Provider value={{ user, ready, login, adminLogin, logout, refresh, loginOpen, openLogin: () => setLoginOpen(true), closeLogin: () => setLoginOpen(false) }}>
       {children}
     </AuthCtx.Provider>
   )

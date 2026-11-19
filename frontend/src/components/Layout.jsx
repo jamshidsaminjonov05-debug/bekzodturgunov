@@ -2,6 +2,7 @@ import { useEffect } from 'react'
 import { Link, Outlet, useLocation } from 'react-router-dom'
 import { TELEGRAM } from '../lib/sections'
 import LoginModal from './LoginModal'
+import Onboarding from './Onboarding'
 import Navbar from './Navbar'
 
 export { Avatar } from './Navbar'
@@ -36,6 +37,7 @@ export default function Layout() {
         </div>
       </footer>
       <LoginModal />
+      <Onboarding />
     </div>
   )
 }

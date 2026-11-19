@@ -304,7 +304,8 @@ textarea.input { line-height: 32px; background-image: repeating-linear-gradient(
 .nav-link {
   position: relative; z-index: 0;
   padding: 0.05rem 0.35rem; margin: 0 0.15rem; border-radius: 0.2em;
-  font: inherit; font-size: 1.1rem; line-height: 1.4;
+  font: inherit; font-size: 1rem; line-height: 1.4;
+  white-space: nowrap;
   color: var(--fg-primary); border: 0; cursor: pointer; text-decoration: none;
   background-color: transparent;
   background-image: linear-gradient(-100deg, color-mix(in srgb, var(--accent-secondary) 25%, transparent), var(--accent-secondary) 95%, color-mix(in srgb, var(--accent-secondary) 80%, transparent));
@@ -350,7 +351,7 @@ textarea.input { line-height: 32px; background-image: repeating-linear-gradient(
 .menu-item:hover, .menu-item:focus-visible { background: var(--bg-secondary); }
 #mobile-menu .nav-link { align-self: flex-start; margin: 0.3rem 0; font-size: 1.4rem; text-align: left; }
 /* Kirish tugmasi: sariq, soyali */
-.nav-login.btn { padding: 0.3rem 0.9rem; }
+.nav-login.btn { padding: 0.3rem 0.9rem; white-space: nowrap; line-height: 1.2; }
 #mobile-menu .nav-login.btn { margin-top: 0.5rem; align-self: flex-start; }
 
 .skip-link {
@@ -373,3 +374,242 @@ textarea.input { line-height: 32px; background-image: repeating-linear-gradient(
 .result-row.top-1 { border-left-color: var(--accent-secondary); }
 .result-row.top-2 { border-left-color: var(--fg-tertiary); }
 .result-row.top-3 { border-left-color: color-mix(in srgb, #c08040 70%, var(--bg-secondary)); }
+
+/* ---------- Kitob: matndagi so'zlarni bosib belgilash ---------- */
+.word-token {
+  display: inline; padding: 0 1px; margin: 0; border: 0; border-radius: 3px;
+  background: transparent; color: inherit; font: inherit; line-height: inherit;
+  cursor: pointer; transition: background 0.12s, color 0.12s;
+}
+.word-token:hover { background: color-mix(in srgb, var(--accent-primary) 45%, transparent); }
+.word-token:focus-visible { outline: 2px solid var(--accent-primary); outline-offset: 1px; }
+.word-token.marked {
+  background: var(--accent-secondary); color: #1f2937;
+  box-shadow: 0 1px 0 color-mix(in srgb, #000 18%, transparent);
+}
+.text-good { color: var(--good); }
+.text-bad { color: var(--bad); }
+
+/* ---------- O'quvchilar natijalari kartalari ---------- */
+.result-card { border-top: 4px solid var(--accent-secondary); }
+.cert-badge {
+  width: 46px; height: 46px; display: flex; align-items: center; justify-content: center;
+  font-size: 1.6rem; background: var(--accent-secondary);
+  border: 2px solid var(--fg-primary); box-shadow: 3px 3px 0 var(--fg-primary);
+  transform: rotate(-4deg); flex-shrink: 0;
+}
+.part-box {
+  text-align: center; padding: 0.35rem 0.2rem;
+  border: 1px solid var(--fg-tertiary); background: var(--bg-secondary);
+}
+.part-box b { font-size: 1.1rem; }
+
+/* Mobil menyuda bo'limlar ro'yxati */
+.mobile-sub { display: grid; gap: 0.1rem; margin: 0.1rem 0 0.4rem 1rem; border-left: 2px dotted var(--bg-tertiary); padding-left: 0.7rem; }
+.mobile-sub-link { font-size: 0.95rem; color: var(--fg-tertiary); text-decoration: none; padding: 0.15rem 0; }
+.mobile-sub-link:hover { color: var(--fg-primary); text-decoration: underline; }
+
+/* ---------- Navbar: hover bilan ochiladigan karta ---------- */
+.main-nav { justify-content: space-between; gap: 0.25rem; flex-wrap: nowrap; }
+.nav-item { position: relative; display: flex; }
+.nav-dropdown {
+  display: none; position: absolute; top: 100%; left: 0; z-index: 60;
+  min-width: 15rem; padding: 0.5rem;
+  background: var(--bg-primary); border: 2px solid var(--fg-primary);
+  box-shadow: 5px 5px 0 var(--fg-primary);
+}
+.nav-item:hover .nav-dropdown,
+.nav-item:focus-within .nav-dropdown { display: grid; gap: 0.2rem; animation: onboard-in 0.15s ease-out; }
+.nav-drop-link {
+  display: block; padding: 0.45rem 0.6rem; text-decoration: none;
+  color: var(--fg-primary); font-size: 0.98rem; border: 1px solid transparent;
+}
+.nav-drop-link:hover, .nav-drop-link:focus-visible {
+  background: var(--accent-secondary); border-color: var(--fg-primary); text-decoration: none;
+}
+
+/* ---------- Navbar ochiladigan menyu ---------- */
+.nav-select {
+  flex: 1; min-width: 0; max-width: 26rem;
+  font: inherit; font-size: 1.05rem; padding: 0.35rem 2rem 0.35rem 0.7rem;
+  background: var(--bg-primary); color: var(--fg-primary);
+  border: 2px solid var(--fg-primary); border-radius: 0;
+  box-shadow: 3px 3px 0 var(--fg-primary);
+  cursor: pointer; appearance: none;
+  background-image: linear-gradient(45deg, transparent 50%, var(--fg-primary) 50%),
+                    linear-gradient(135deg, var(--fg-primary) 50%, transparent 50%);
+  background-position: calc(100% - 18px) 55%, calc(100% - 12px) 55%;
+  background-size: 6px 6px, 6px 6px; background-repeat: no-repeat;
+}
+.nav-select:hover { background-color: var(--accent-secondary); }
+
+/* ---------- Sertifikat ---------- */
+.certificate {
+  max-width: 420px; margin: 0 auto; padding: 1.5rem 1.1rem;
+  background: #fbf6e9; color: #4a3b28;
+  border: 2px double #b08a4f; outline: 1px solid #b08a4f; outline-offset: 4px;
+  box-shadow: 4px 4px 0 color-mix(in srgb, #b08a4f 30%, transparent);
+  text-align: center; position: relative;
+}
+.certificate::before {
+  content: ''; position: absolute; inset: 5px; border: 1px solid #d9c49a; pointer-events: none;
+}
+.cert-top { display: flex; align-items: center; justify-content: center; gap: 0.7rem; text-align: left; margin-bottom: 1.1rem; }
+.cert-top b { display: block; font-size: 0.85rem; letter-spacing: 0.06em; }
+.cert-top span:not(.cert-emblem) { font-size: 0.65rem; opacity: 0.8; }
+.cert-emblem { font-size: 2.1rem; }
+.cert-title { font-family: var(--font-display, inherit); font-size: 1.8rem; font-weight: 800; letter-spacing: 0.1em; color: #9a6b2f; }
+.cert-sub { font-size: 0.75rem; opacity: 0.85; margin-top: 0.2rem; }
+.cert-level {
+  display: inline-block; margin: 0.9rem auto 0.5rem; padding: 0.2rem 1.3rem;
+  border: 2px solid; font-size: 1.6rem; font-weight: 800; color: #7a5426;
+}
+.cert-award { margin: 0.6rem 0 0.1rem; font-size: 0.8rem; }
+.cert-name { font-size: 1.4rem; font-weight: 700; padding: 0.3rem 0 0.6rem; border-bottom: 1px solid #c9ad78; }
+.cert-scores { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.4rem; margin: 0.9rem 0; }
+.cert-scores div { border: 1px solid #c9ad78; padding: 0.3rem; }
+.cert-scores span { display: block; font-size: 0.65rem; opacity: 0.8; }
+.cert-scores b { font-size: 1.05rem; }
+.cert-foot { display: flex; justify-content: space-between; gap: 0.4rem; font-size: 0.7rem; border-top: 1px solid #c9ad78; padding-top: 0.5rem; flex-wrap: wrap; }
+.cert-locked { filter: grayscale(0.7); opacity: 0.6; }
+@media print {
+  body * { visibility: hidden !important; }
+  .certificate, .certificate * { visibility: visible !important; }
+  .certificate { position: absolute; left: 0; top: 0; box-shadow: none; }
+  .no-print { display: none !important; }
+}
+
+/* ---------- Faoliyat xaritasi (GitHub style) ---------- */
+.heatmap { display: flex; flex-wrap: wrap; gap: 3px; max-width: 760px; }
+.heat-cell { width: 11px; height: 11px; display: inline-block; border: 1px solid var(--fg-tertiary); }
+.shade-0 { background: var(--bg-secondary); }
+.shade-1 { background: #cfe8cf; }
+.shade-2 { background: #8fc98f; }
+.shade-3 { background: #4f9e57; }
+.shade-4 { background: #1f6b2c; }
+
+/* ---------- Birinchi kirish onboarding ---------- */
+.onboard-overlay {
+  position: fixed; inset: 0; z-index: 85;
+  display: flex; align-items: center; justify-content: center;
+  padding: 1rem; background: rgb(20 20 30 / 0.55); backdrop-filter: blur(3px);
+  overflow-y: auto;
+}
+.onboard-card {
+  position: relative; width: min(42rem, 100%); max-height: 92vh; overflow-y: auto;
+  background: var(--bg-primary); border: 2px solid var(--fg-primary); border-left-width: 6px;
+  box-shadow: 10px 10px 0 var(--fg-primary); padding: 2rem 1.5rem;
+  animation: onboard-in 0.35s ease-out;
+}
+@keyframes onboard-in {
+  from { transform: translateY(18px) scale(0.97); opacity: 0; }
+  to { transform: none; opacity: 1; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .onboard-card { animation: none; }
+  .confetti { display: none; }
+}
+.confetti span {
+  position: absolute; top: 8%; font-size: 1.5rem;
+  left: calc(8% + var(--i) * 18%);
+  animation: confetti-fall 2.4s ease-in-out infinite;
+  animation-delay: calc(var(--i) * 0.25s);
+}
+@keyframes confetti-fall {
+  0%, 100% { transform: translateY(0) rotate(0deg); opacity: 0.9; }
+  50% { transform: translateY(45px) rotate(20deg); opacity: 1; }
+}
+.btn-lg { padding: 0.75rem 1.8rem; font-size: 1.1rem; }
+
+/* ---------- Daraja nishonlari va progress ---------- */
+.progress-track {
+  height: 12px; border: 2px solid var(--fg-primary); background: var(--bg-secondary);
+  box-shadow: 2px 2px 0 var(--fg-primary); overflow: hidden;
+}
+.progress-fill { height: 100%; background: var(--accent-secondary); transition: width 0.4s ease; }
+.level-badge {
+  min-width: 62px; text-align: center; padding: 0.5rem 0.4rem;
+  border: 2px solid var(--fg-primary); background: var(--bg-secondary);
+  box-shadow: 3px 3px 0 var(--fg-primary); font-size: 0.95rem;
+}
+.level-badge.locked { opacity: 0.45; filter: grayscale(1); }
+.level-badge.unlocked { background: var(--accent-secondary); }
+.level-badge.current { border-width: 3px; box-shadow: 4px 4px 0 var(--fg-primary); transform: translateY(-2px); }
+
+/* ---------- Kirmagan foydalanuvchi profili ---------- */
+.guest-avatar {
+  width: 120px; height: 120px; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 3.5rem; background: var(--accent-secondary);
+  border: 2px solid var(--fg-primary); box-shadow: 6px 6px 0 var(--fg-primary);
+  transform: rotate(-3deg);
+}
+@media (max-width: 640px) { .guest-avatar { width: 88px; height: 88px; font-size: 2.5rem; } }
+
+/* ---------- Kitob card'lari va muqova ---------- */
+.book-cover {
+  display: block; width: 108px; height: 150px; flex-shrink: 0;
+  border: 2px solid var(--fg-primary); overflow: hidden;
+  box-shadow: 5px 5px 0 var(--fg-primary);
+  transform: rotate(-2deg); transition: transform 0.15s, box-shadow 0.15s;
+}
+.book-cover:hover { transform: rotate(0deg) translateY(-2px); box-shadow: 7px 7px 0 var(--fg-primary); }
+.book-cover img { display: block; width: 100%; height: 100%; object-fit: cover; }
+.book-cover-fallback {
+  display: flex; align-items: center; justify-content: center;
+  width: 100%; height: 100%; font-size: 3rem; background: var(--bg-secondary);
+}
+@media (max-width: 640px) {
+  .book-cover { width: 84px; height: 118px; }
+}
+
+/* ---------- Pasajlar ro'yxati modali ---------- */
+.picker-backdrop {
+  position: fixed; inset: 0; z-index: 70;
+  display: flex; align-items: center; justify-content: center;
+  padding: 1rem; background: rgb(0 0 0 / 0.45); backdrop-filter: blur(2px);
+}
+.picker-modal {
+  width: min(56rem, 100%); max-height: min(85vh, 48rem); overflow-y: auto;
+  background: var(--bg-primary); color: var(--fg-primary);
+  border: 2px solid var(--fg-primary); border-left-width: 6px;
+  box-shadow: 8px 8px 0 var(--fg-primary);
+  padding: 1.25rem 1.25rem 1.5rem 2rem;
+  animation: toast-in 0.16s ease-out;
+}
+@media (max-width: 640px) {
+  .picker-modal { padding: 1rem; border-left-width: 4px; box-shadow: 4px 4px 0 var(--fg-primary); }
+}
+
+/* ---------- Toast bildirishnomalar (500 / tarmoq xatoliklari) ---------- */
+.toast-stack {
+  position: fixed; right: 1rem; bottom: 1rem; z-index: 90;
+  display: flex; flex-direction: column; gap: 0.5rem;
+  width: min(24rem, calc(100vw - 2rem));
+}
+.toast {
+  display: flex; align-items: flex-start; gap: 0.6rem;
+  padding: 0.75rem 0.9rem; font-size: 0.95rem; line-height: 1.45;
+  background: var(--bg-primary); color: var(--fg-primary);
+  border: 2px solid var(--bad); border-left-width: 6px;
+  box-shadow: 4px 4px 0 color-mix(in srgb, var(--bad) 28%, transparent);
+  animation: toast-in 0.18s ease-out;
+}
+.toast-success {
+  border-color: var(--good);
+  box-shadow: 4px 4px 0 color-mix(in srgb, var(--good) 28%, transparent);
+}
+.toast-icon { font-size: 1.1rem; line-height: 1.3; flex-shrink: 0; }
+.toast-text { flex: 1; min-width: 0; }
+.toast-close {
+  border: 0; background: transparent; color: var(--fg-tertiary);
+  font-size: 1.3rem; line-height: 1; cursor: pointer; padding: 0 0.15rem;
+}
+.toast-close:hover { color: var(--fg-primary); }
+@keyframes toast-in {
+  from { transform: translateY(10px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .toast { animation: none; }
+}

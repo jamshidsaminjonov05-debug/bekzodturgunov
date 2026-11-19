@@ -5,6 +5,7 @@ import { byKind } from '../lib/sections'
 import { Back, ErrorBox, Heading, LevelTag, Loader, Paper } from '../components/ui'
 import Speaking from './lessons/Speaking'
 import Writing from './lessons/Writing'
+import Book from './lessons/Book'
 
 /* ---------- Mini quiz (grammatika va hikoyalar uchun) ---------- */
 function Quiz({ items }) {
@@ -101,7 +102,7 @@ function Story({ data }) {
   )
 }
 
-const VIEWS = { vocab: Vocab, grammar: Grammar, stories: Story, speaking: Speaking, writing: Writing }
+const VIEWS = { vocab: Vocab, grammar: Grammar, stories: Story, speaking: Speaking, writing: Writing, book: Book }
 
 export default function LessonPage() {
   const { id } = useParams()

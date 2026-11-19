@@ -6,12 +6,38 @@ import { useTheme } from '../lib/theme'
 import PaperPicker from './PaperPicker'
 
 const NAV = [
-  { id: 'bolimlar', to: '/#bolimlar', label: "Bo'limlar" },
-  { to: '/musobaqa', label: 'Musobaqa', live: true },
-  { id: 'kurs', to: '/#kurs', label: 'Kurs' },
-  { id: 'natijalar', to: '/#natijalar', label: 'Natijalar' },
+  { to: '/#bolimlar', label: "Bo'limlar", sub: [
+    { to: '/bolim/reading', label: '📖 Reading' },
+    { to: '/bolim/listening', label: '🎧 Listening' },
+    { to: '/bolim/writing', label: '✍️ Writing' },
+    { to: '/bolim/speaking', label: '🎤 Speaking' },
+    { to: '/bolim/lugat', label: "🗂️ Lug'at" },
+    { to: '/bolim/grammatika', label: '📐 Grammatika' },
+    { to: '/bolim/stories', label: '📚 Stories' },
+    { to: '/bolim/kitoblar', label: '📘 Kitoblar' },
+    { to: '/games', label: "🎮 O'yinlar" },
+    { to: '/learning', label: '🎓 O‘quv markazi' },
+  ] },
+  { to: '/musobaqa', label: 'Musobaqa', live: true, sub: [
+    { to: '/musobaqa', label: '🏆 Lug‘at chempionati' },
+    { to: '/games?tab=rating', label: '📈 Reyting' },
+    { to: '/games?tab=challenge', label: '🎯 Kunlik challenge' },
+  ] },
+  { to: '/#kurs', label: 'Kurs', sub: [
+    { to: '/learning?tab=courses', label: '🎓 Bepul kurslarim' },
+    { to: '/learning?tab=groups', label: '👥 Guruhlarim' },
+    { to: '/learning?tab=media', label: '🎬 Video darslar' },
+    { to: '/bolim/kitoblar', label: '📚 ELS kitoblari' },
+  ] },
+  { to: '/#natijalar', label: 'Natijalar', sub: [
+    { to: '/profil', label: '👤 Mening natijalarim' },
+    { to: '/profil', label: '🏆 Sertifikatlarim' },
+    { to: '/learning?tab=progress', label: '📈 Progressim' },
+    { to: '/learning?tab=progress', label: '🏅 Yutuqlarim' },
+    { to: '/profil', label: '🎓 Darajalarim' },
+  ] },
 ]
-const SECTION_PATHS = ['/bolim', '/test', '/dars']
+const SECTION_PATHS = ['/bolim', '/test', '/dars', '/kitob', '/games', '/learning']
 
 /* Bir xil uslubdagi ingichka chiziqli ikonkalar */
 const Icon = {
@@ -93,6 +119,35 @@ function Account({ inline = false }) {
   )
 }
 
+/** Natija bo'limiga noman imgina yumushli skroll qilish */
+export function scrollToHash(hash) {
+  if (!hash) return
+  setTimeout(() => {
+    const el = document.getElementById(hash)
+    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' })
+  }, 80)
+}
+
+const goTo = (to) => scrollToHash(to.split('#')[1])
+
+/** Hover: tagidan pastga karta bo'lib ochiladigan menyu elementi */
+function NavItem({ item, active, live }) {
+  return (
+    <div className="nav-item">
+      <Link to={item.to} className={`nav-link ${active ? 'is-active' : ''}`}
+        aria-current={active ? 'page' : undefined} onClick={() => goTo(item.to)}>
+        {item.label}
+        {item.live && live && <span className="live-dot !w-1.5 !h-1.5 ml-1 align-middle" aria-label="jonli" />}
+      </Link>
+      <div className="nav-dropdown">
+        {item.sub.map((s) => (
+          <Link key={s.label} to={s.to} className="nav-drop-link" onClick={() => goTo(s.to)}>{s.label}</Link>
+        ))}
+      </div>
+    </div>
+  )
+}
+
 export default function Navbar() {
   const [theme, toggleTheme] = useTheme()
   const loc = useLocation()
@@ -131,16 +186,23 @@ export default function Navbar() {
 
   useEffect(() => setOpen(false), [loc.pathname, loc.hash])
 
-  const isActive = (n) =>
-    n.id
-      ? (loc.pathname === '/' && spy === n.id) || (n.id === 'bolimlar' && SECTION_PATHS.some((p) => loc.pathname.startsWith(p)))
-      : loc.pathname.startsWith(n.to)
+  const isActive = (n) => {
+    if (n.to.includes('#')) return loc.pathname === '/' && loc.hash === `#${n.to.split('#')[1]}`
+    const path = n.to.split('?')[0]
+    return path === '/' ? loc.pathname === '/' : loc.pathname.startsWith(path)
+  }
 
   const links = NAV.map((n) => (
-    <Link key={n.to} to={n.to} className={`nav-link ${isActive(n) ? 'is-active' : ''}`} aria-current={isActive(n) ? 'page' : undefined}>
-      {n.label}
-      {n.live && live && <span className="live-dot !w-1.5 !h-1.5 ml-1 align-middle" aria-label="jonli" />}
-    </Link>
+    <div key={n.to}>
+      <Link to={n.to} className={`nav-link ${isActive(n) ? 'is-active' : ''}`}
+        aria-current={isActive(n) ? 'page' : undefined} onClick={() => goTo(n.to)}>
+        {n.label}
+        {n.live && live && <span className="live-dot !w-1.5 !h-1.5 ml-1 align-middle" aria-label="jonli" />}
+      </Link>
+      <div className="mobile-sub">
+        {n.sub.map((s) => <Link key={s.label} to={s.to} className="mobile-sub-link" onClick={() => goTo(s.to)}>{s.label}</Link>)}
+      </div>
+    </div>
   ))
 
   return (
@@ -153,7 +215,9 @@ export default function Navbar() {
             <span className="font-display text-2xl sm:text-3xl truncate">Bekzod Turg'unov</span>
           </Link>
 
-          <nav aria-label="Asosiy menyu" className="hidden md:flex items-center gap-2">{links}</nav>
+          <nav aria-label="Asosiy menyu" className="hidden md:flex items-center gap-2">
+            {NAV.map((n) => <NavItem key={n.to} item={n} active={isActive(n)} live={live} />)}
+          </nav>
           <span className="hidden md:block w-px h-7 bg-bg-tertiary mx-3" aria-hidden />
 
           <PaperPicker />
