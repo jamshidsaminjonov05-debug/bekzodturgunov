@@ -5,8 +5,14 @@ from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, sessionmaker
 
 from .config import DATABASE_URL, BASE_DIR
 
-(BASE_DIR / "data").mkdir(exist_ok=True)
-engine = create_engine(DATABASE_URL, connect_args={"check_same_thread": False})
+IS_SQLITE = DATABASE_URL.startswith("sqlite")
+if IS_SQLITE and not DATABASE_URL.startswith("sqlite:////tmp"):
+    (BASE_DIR / "data").mkdir(exist_ok=True)
+engine = create_engine(
+    DATABASE_URL,
+    connect_args={"check_same_thread": False} if IS_SQLITE else {},
+    pool_pre_ping=not IS_SQLITE,
+)
 SessionLocal = sessionmaker(bind=engine, expire_on_commit=False)
 
 

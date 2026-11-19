@@ -16,6 +16,12 @@ export async function api(path, { method = 'GET', body } = {}) {
   if (token) headers.Authorization = `Bearer ${token}`
   const res = await fetch(`${API_BASE}${path}`, { method, headers, body: body ? JSON.stringify(body) : undefined })
   const data = await res.json().catch(() => null)
+  // Backend o'rniga HTML (masalan, index.html) kelsa — bu xato, jimgina null qaytarmaymiz
+  if (res.ok && data === null && !(res.headers.get('content-type') || '').includes('json')) {
+    const err = new Error("Server bilan bog'lanib bo'lmadi")
+    err.status = 502
+    throw err
+  }
   if (!res.ok) {
     let msg = data?.detail ?? `Xatolik (${res.status})`
     if (Array.isArray(msg)) msg = msg.map((d) => d.msg).join(', ')
